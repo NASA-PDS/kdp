@@ -1,0 +1,33 @@
+# Default values for KDP Operator.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Container template spec
+#
+# Update image to pull a differnt image or tag
+# imagePullPolicy can be Always, IfNotPresent, or Never (not recommended)
+# Specifying :latest tag on image is same as imagePullPolicy: Always
+image: kdp-operator:latest 
+imagePullPolicy: "Always"
+
+# Less common configuration
+#
+# Most of these shouldn't need to be tweaked except in
+# very specific circumstances for testing / performance tuning
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+affinity: {}
+
+nameOverride: ""
+fullnameOverride: ""

@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{name}"
+  labels:
+    name: "{label}"
+spec:
+  template:
+    spec:
+      containers:
+      - name: "{container_name}"
+        image: "{container_image}"
+        imagePullPolicy: Always
+        env:
+        - name: DATA_JSON
+          value: '{data_json}'
+        - name: QUEUE_HOSTNAME
+          value: '{queue_hostname}'
+        - name: QUEUE_PORT
+          value: '{queue_port}'
+        - name: QUEUE_ID
+          value: '{queue_id}'
+      restartPolicy: Never

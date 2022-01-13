@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{name}"
+  labels:
+    name: "{label}"
+spec:
+  replicas: 1 
+  selector:
+    matchLabels:
+      name: "{label}"
+  template:
+    metadata:
+      labels:
+        name: "{label}"
+    spec:
+      containers:
+      - name: "redis"
+        image: redis:6.0.9-alpine
+        command:
+          - "redis-server"
+        args:
+          - "--protected-mode"
+          - "no"
+        ports:
+        - containerPort: 6379
+        env:
+        - name: REDIS_PORT
+          value: "6379"
+        volumeMounts:
+        - name: health
+          mountPath: /health
+        livenessProbe:
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 5
+          exec:
+            command:
+            - sh
+            - -c
+            - /health/ping_liveness_local.sh 5
+        readinessProbe:
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 5
+          exec:
+            command:
+            - sh
+            - -c
+            - /health/ping_readiness_local.sh 5
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 100m
+      volumes:
+        - name: health
+          configMap:
+            name: "{name}-health"
+            defaultMode: 0755

@@ -1,0 +1,28 @@
+# Default values for KDP example chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Container images
+# These should be set to the latest versions of these containers. You might need to change these
+# depending on deployment venue. For example, AWS deployments need these images to be in ECR.
+
+# Parallelism should be set to the desired number of pods for each pipeline step.
+
+node_one:
+  image: some-repository/node_one:latest
+  parallelism: 64
+node_two:
+  image: some-repository/node_two:latest
+  parallelism: 8
+
+# Pipeline ID to use. Use this to link datainputs to this pipeline installation.
+pipeline:
+  id: kdp-pipeline-example
+
+# Less common configuration
+#
+# Most of these shouldn't need to be tweaked except in
+# very specific circumstances for testing / performance tuning
+
+nameOverride: ""
+fullnameOverride: ""

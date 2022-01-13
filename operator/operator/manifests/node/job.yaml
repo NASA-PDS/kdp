@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{name}"
+spec:
+  template:
+    spec:
+      containers:
+      - name: "{container_name}"
+        image: "{container_image}"
+        imagePullPolicy: Always
+        command:
+        - /opt/local/kdp/entrypoint.sh
+        args:
+        - /opt/local/kdp/app.py
+        env:
+        - name: QUEUE_HOSTNAME
+          value: "{queue_name}"
+        - name: QUEUE_PORT
+          value: '{queue_port}'
+        - name: QUEUE_INPUT
+          value: '{input}'
+        - name: QUEUE_OUTPUT
+          value: '{output}'
+        - name: CONTAINER_NAME
+          value: "{container_name}"
+        - name: PIPELINE_ID
+          value: "{pipeline_id}"
+      restartPolicy: OnFailure

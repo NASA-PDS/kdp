@@ -1,0 +1,158 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: datainputs.kdp.nasa-pds.github.io
+spec:
+  group: kdp.nasa-pds.github.io
+  scope: Namespaced
+  names:
+    plural: datainputs
+    singular: datainput
+    kind: DataInput
+    shortNames:
+    - di
+  versions:
+  - name: v1
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              pipeline:
+                properties:
+                  id:
+                    nullable: false
+                    type: string
+                    description: Pipeline ID to map this DataInput to
+                type: object
+              data:
+                type: object
+                description: Payload passed to the image as json-encoded input
+                x-kubernetes-preserve-unknown-fields: true
+              image:
+                type: string
+                description: Image that generates data inputs for the supplied pipeline id given the supplied data as input
+              pullSecret:
+                type: string
+                description: Kubernetes secret for this image, if applicable
+              ephemeral:
+                type: boolean
+                description: Flag denoting whether this datainput is long-standing (e.g. pulls data from a streaming source) or is short-lived. When set to false, this DataInput is installed to the cluster and kept alive until manually removed.
+                default: true
+              secrets:
+                type: array
+                description: Array of secret keys to expose to datainput container
+                items:
+                  type: string
+            required:
+            - pipeline
+            - data
+            - image
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: pipelines.kdp.nasa-pds.github.io
+spec:
+  group: kdp.nasa-pds.github.io
+  scope: Namespaced
+  names:
+    plural: pipelines
+    singular: pipeline
+    kind: Pipeline
+    shortNames:
+    - pl
+  versions:
+  - name: v1
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            description: A pipeline definition for KDP
+            nullable: false
+            properties:
+              graph:
+                description: Graph describing the pipeline
+                nullable: false
+                properties:
+                  secrets:
+                    description: Array of secret keys to expose to pipeline nodes
+                    items:
+                      type: string
+                    type: array
+                  edges:
+                    description: Array of directed edges in the graph, linking each
+                      node to the next step in the pipeline
+                    items:
+                      nullable: false
+                      properties:
+                        source:
+                          nullable: false
+                          type: string
+                        target:
+                          nullable: false
+                          type: string
+                      required:
+                      - source
+                      - target
+                      type: object
+                    nullable: false
+                    type: array
+                  nodes:
+                    description: Nodes in the graph, corresponding to pipeline steps
+                    nullable: false
+                    additionalProperties:
+                      properties:
+                        image:
+                          description: Container image to use for this node
+                          type: string
+                        pullSecret:
+                          description: Kubernetes secret for this image
+                          type: string
+                        command:
+                          description: Command for KDP to run for each pipeline input
+                          items:
+                            type: string
+                          type: array
+                        options:
+                          description: Arbitrary object for node options
+                          x-kubernetes-preserve-unknown-fields: true
+                          type: object
+                        parallelism:
+                          description: Number of concurrent pods to run for this node in the pipeline (positive & non-zero)
+                          type: integer
+                          minimum: 1
+                      required:
+                      - image
+                      type: object
+                    type: object
+                required:
+                - nodes
+                - edges
+                type: object
+              id:
+                description: The unique identifier for a pipeline
+                nullable: false
+                type: string
+              name:
+                description: The name of the pipeline
+                nullable: false
+                type: string
+            required:
+            - id
+            - name
+            - graph
+            title: Pipeline
+            type: object
+          status:
+            type: object
+            x-kubernetes-preserve-unknown-fields: true
+---

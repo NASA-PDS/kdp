@@ -1,0 +1,78 @@
+# <k8s boilerplate>
+apiVersion: kdp.nasa-pds.github.io/v1
+kind: Pipeline
+# </k8s boilerplate>
+metadata:
+  # unique name for the pipeline
+  name: pipeline-example
+spec:
+  # unique id for the pipeline, usually matches metadata.name
+  # this is the pipeline ID that is used to map inputs via datainputs
+  id: pipeline-example
+  # plain text pipeline name
+  name: Example Pipeline
+  # DAG defining the pipeline's structure
+  graph:
+    # each node in the graph is a "step" in the pipeline
+    nodes:
+      # the keys here are the names of the steps
+      # so this pipeline has 3 steps: "start", "middle", and "end"
+      start:
+        # each pipeline step supports a number of options
+
+        # image is the container image:tag that this step should use
+        image: starting-container-id
+        # pullSecret is the optional k8s secret key that is needed
+        # to pull the specified image
+        pullSecret: pullSecretGoesHere
+        # command is like an entrypoint in a dockerfile
+        # this is the command that the KDP manager (node background daemon)
+        # calls with each individual input that hits this pipeline step
+        # note that the /opt/local/kdp is just a common practice - we tend
+        # to have our Dockerfiles put KDP user code in /opt/local/kdp
+        command: 
+        - "/opt/local/kdp/util.py"
+        # paralellism is one of KDP's most powerful offerings
+        # it defines the replication for each individual pipeline step
+        # this gets passed directly to k8s 'paralellism' for the underlying jobs
+        paralellism: 16
+      # the rest of the pipeline example is pretty straightforward
+      # TODO: note that KDP does not currently support single node pipelines,
+      # but there are plans for that in the near future.
+      middle:
+        image: middle-container-id
+        command:
+        - "./opt/local/kdp/script.sh"
+      last:
+        image: last-container-id
+        # of note: command is an array, so you can define multi-line commands
+        # in the manner described below.
+        # the below example bypasses the need for any specific user code - 
+        # it creates a static output that KDP will happily pass along to the
+        # next pipeline step
+        command: 
+        - "echo"
+        - "{\"key\":\"value\"}"
+        - ">"
+        - "kdp_output.json"
+        # TODO: arbitrary options are currently supported in pipeline definitions but have 
+        # not yet been implemented. KDP will not complain about an invalid schema,
+        # but the options will be unavailable to your pods.
+        options:
+          config:
+            foo: value
+            bar: true
+    # edges are the last component of the DAG
+    # they define how nods are connected to one another
+    # the above nodes plus the below edges produce the following graph:
+    #               +-------+      +--------+      +------+
+    #  datainput -> | start | ---> | middle | ---> | last | -> end
+    #               +-------+      +--------+      +------+
+    # where "start" pushes all output to "middle", and "middle" pushes all
+    # output to "last". Outputs from "last" are simply output to the logs.
+    # TODO: support for "dataoutputs" is tentatively planned for the future.
+    edges:
+    - source: start
+      target: middle
+    - source: middle
+      target: last

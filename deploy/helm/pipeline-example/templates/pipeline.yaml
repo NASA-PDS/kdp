@@ -1,0 +1,22 @@
+apiVersion: kdp.nasa-pds.github.io/v1
+kind: Pipeline
+metadata:
+  name: {{ .Values.pipeline.id }}
+spec:
+  id: {{ .Values.pipeline.id }}
+  name: KDP Pipeline Helm Template Example
+  graph:
+    nodes:
+      node-one:
+        image: {{ .Values.node_one.image }}
+        command:
+        - "/opt/local/kdp/app.py"
+        parallelism: {{ .Values.node_one.parallelism }}
+      node-two:
+        image: {{ .Values.node_two.image }}
+        command:
+        - "/opt/local/kdp/app.py"
+        parallelism: {{ .Values.node_two.parallelism }}
+    edges:
+      - source: node-one
+        target: node-two

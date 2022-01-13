@@ -1,0 +1,6 @@
+apiVersion: v2
+name: kdp-example-chart
+description: An example helm chart for a KDP pipeline
+type: application
+version: 1.0.0
+appVersion: 1.0.0

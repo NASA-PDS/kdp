@@ -1,0 +1,85 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Pipeline",
+    "description": "A pipeline definition for KDP",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "id": {
+            "description": "The unique identifier for a pipeline",
+            "type": "string"
+        },
+        "name": {
+            "description": "The name of the pipeline",
+            "type": "string"
+        },
+        "graph": {
+            "description": "Graph describing the pipeline",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "nodes": {
+                    "description": "Nodes in the graph, corresponding to pipeline steps",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                            "image": {
+                                "description": "Container image to use for this node",
+                                "type": "string"
+                            },
+                            "pullSecret": {
+                                "description": "Kubernetes secret for this image",
+                                "type": "string"
+                            },
+                            "command" : {
+                                "description": "Command for KDP to run for each pipeline input",
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "options": {
+                                "description": "Arbitrary object for node options",
+                                "type": "object"
+                            },
+                            "parallelism": {
+                                "description": "Number of concurrent pods to run for this node in the pipeline (positive & non-zero)",
+                                "type": "integer",
+                                "minimum": 1
+                            }
+                        },
+                        "required": [ "image" ]
+                    }
+                },
+                "edges": {
+                    "description": "Array of directed edges in the graph, linking each node to the next step in the pipeline",
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                            "source": {
+                                "type": "string"
+                            },
+                            "target": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [ "source", "target" ]
+                    }
+                },
+                "secrets": {
+                    "description": "Array of secret keys to expose to pipeline nodes",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }                    
+                }
+            },
+            "required": [ "nodes", "edges" ]
+        }
+    },
+    "required": [ "id", "name", "graph" ]
+}

@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: kdp
+  name: kdp-operator
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      application: kdp-operator
+  template:
+    metadata:
+      labels:
+        application: kdp-operator
+    spec:
+      serviceAccountName: kdp-account
+      containers:
+      - name: kdp-operator-container
+        image: nasa-pds/kdp/operator:latest 

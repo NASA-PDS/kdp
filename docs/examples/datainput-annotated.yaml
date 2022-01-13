@@ -1,0 +1,29 @@
+# <k8s boilerplate>
+apiVersion: kdp.nasa-pds.github.io/v1
+kind: DataInput
+# </k8s boilerplate>
+metadata:
+  # unique name for the datainput
+  name: a-clever-name
+spec:
+  pipeline:
+    # which pipeline should the datainput send inputs to?
+    id: a-pipeline-name
+  data: 
+    # this part is totally arbitrary - put whatever you want in here!
+    a_key: "a value"
+    another_key: "another value"
+    array:
+    - name: item1
+      val: value1
+    - name: item2
+      val: value2
+  # container image:tag to use for this datainput
+  image: datainput-image:latest
+  # need to pass a secret to imagePullSecrets?
+  pullSecret: imagePullSecretGoesHere
+  # should this run to completion or just stick around forever?
+  ephemeral: false 
+  # secrets that will be available to the node's container
+  secrets:
+  - secretKey

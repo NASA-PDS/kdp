@@ -1,9 +1,9 @@
 ---
 name: Feature request
-about: Suggest a new idea or new requirement for this project
+about: Suggest a new idea for this project
 title: As a <what is the user's role?> I want to <what is the user trying to accomplish?>
-labels: needs:triage, requirement
-assignees: jordanpadams
+labels: needs:triage, enhancement
+assignees: ztaylor54
 
 ---
 

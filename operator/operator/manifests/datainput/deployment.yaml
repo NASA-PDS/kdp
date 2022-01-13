@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{name}"
+  labels:
+    name: "{label}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: "{label}"
+  template:
+    metadata:
+      labels:
+        name: "{label}"
+    spec:
+      containers:
+      - name: "{container_name}"
+        image: "{container_image}"
+        imagePullPolicy: Always
+        env:
+        - name: DATA_JSON
+          value: '{data_json}'
+        - name: QUEUE_HOSTNAME
+          value: '{queue_hostname}'
+        - name: QUEUE_ID
+          value: '{queue_id}'

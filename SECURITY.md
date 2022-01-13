@@ -2,15 +2,13 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+We currently support the `latest` version with security updates, and will potentially add long-term support for other versions as this project progresses.
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.18.2   | :white_check_mark: |
-| 1.17.5   | :white_check_mark: |
-| < 1.17.5   | :x: |
+| 0.1.0 (latest) | :white_check_mark: |
+| < 0.1.0  | :x: |
 
 ## Reporting a Vulnerability
 
-Please create a new issue using the [Vulnerability Issue template](https://github.com/NASA-PDS-Incubator/validate/issues/new?assignees=jordanpadams&labels=triage-needed%2C+security&template=vulnerability-issue.md&title=%5BSECURITY%5D+Title+Here)
+Please create a new issue using the [Bug Report Issue Template](https://github.com/NASA-PDS/kdp/issues/new?assignees=ztaylor54&labels=needs:triage%2C+security&template=bug_report.md&title=%5BSECURITY%5D+Title+Here)
