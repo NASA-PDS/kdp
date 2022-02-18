@@ -78,14 +78,17 @@ endif
 # HELPERS
 
 # generate script to login to aws docker repo
-CMD_REPOLOGIN := "eval $$\( aws ecr"
+CMD_REPOLOGIN := "aws ecr get-login-password"
 ifdef AWS_CLI_PROFILE
 CMD_REPOLOGIN += " --profile $(AWS_CLI_PROFILE)"
 endif
 ifdef AWS_CLI_REGION
 CMD_REPOLOGIN += " --region $(AWS_CLI_REGION)"
 endif
-CMD_REPOLOGIN += " get-login --no-include-email \)"
+CMD_REPOLOGIN += " | docker login --username AWS --password-stdin"
+ifdef DOCKER_REPO
+CMD_REPOLOGIN += " $(DOCKER_REPO)"
+endif
 
 # login to AWS-ECR
 aws-login: ## Auto login to AWS-ECR using aws-cli
